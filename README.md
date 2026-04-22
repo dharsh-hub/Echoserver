@@ -58,6 +58,71 @@ server_address =('keerthi',2323)
 httpd = HTTPServer(server_address,MyServer)
 httpd.serve_forever()
 ```
+CLIENT.PY
+```
+# echo_client.py
+
+import socket
+
+# Create socket
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Connect to server
+client_socket.connect(("127.0.0.1", 12345))
+
+while True:
+    message = input("Enter message: ")
+    
+    if message.lower() == "exit":
+        break
+    
+    # Send message
+    client_socket.send(message.encode())
+    
+    # Receive echo
+    data = client_socket.recv(1024).decode()
+    print("Server replied:", data)
+
+# Close socket
+client_socket.close()
+```
+
+SERVER.PY
+```
+# echo_server.py
+
+import socket
+
+# Create socket
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Bind to localhost and port
+server_socket.bind(("127.0.0.1", 12345))
+
+# Listen for connections
+server_socket.listen(1)
+print("Server is waiting for connection...")
+
+# Accept connection
+conn, addr = server_socket.accept()
+print("Connected to:", addr)
+
+while True:
+    data = conn.recv(1024).decode()
+    
+    if not data:
+        break
+    
+    print("Client says:", data)
+    
+    # Echo back the same message
+    conn.send(data.encode())
+
+# Close connection
+conn.close()
+server_socket.close()
+```
+
 ##  Architecture Diagram
 
 ```bash
@@ -87,8 +152,10 @@ httpd.serve_forever()
 
 ## OUTPUT:
 ### CLIENT OUTPUT:
+<img width="519" height="420" alt="Screenshot 2026-04-22 113204" src="https://github.com/user-attachments/assets/735aa618-c4c5-4b72-8819-e6ce52072099" />
 
 ### SERVER OUTPUT:
+<img width="574" height="418" alt="Screenshot 2026-04-22 113158" src="https://github.com/user-attachments/assets/c8fb0528-0732-4e1c-8558-ba78b176201b" />
 
 ## RESULT:
 The program is executed succesfully
